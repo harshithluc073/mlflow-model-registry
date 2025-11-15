@@ -219,7 +219,7 @@ class ModelService:
             
             return {
                 "name": model_name,
-                "version": model_version.version,
+                "version": str(model_version.version),  # Convert to string
                 "stage": model_version.current_stage,
                 "run_id": model_version.run_id,
                 "status": model_version.status,
