@@ -27,7 +27,7 @@ def promote_to_staging(
     version: str = typer.Argument(..., help="Version to promote"),
     archive_existing: bool = typer.Option(True, "--archive/--no-archive", help="Archive existing staging versions"),
 ):
-    """Promote a model from Development to Staging."""
+    """Promote a model from None (Development) to Staging."""
     try:
         manager = StageManager()
         

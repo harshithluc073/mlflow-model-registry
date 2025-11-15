@@ -138,7 +138,7 @@ def train_model(
 
 def register_and_stage_model(run_id: str):
     """
-    Register model and set to Development stage.
+    Register model and set to None (Development) stage.
     
     Args:
         run_id: MLflow run ID
@@ -150,18 +150,18 @@ def register_and_stage_model(run_id: str):
     model_manager = ModelManager()
     
     # The model is already registered during training
-    # Now we'll transition it to Development stage
+    # Now we'll transition it to None (Development) stage
     
     # Get the latest version
     versions = model_manager.list_model_versions("sample_classifier")
     if versions:
         latest_version = versions[0].version
         
-        print(f"\n1. Setting model version {latest_version} to Development stage...")
+        print(f"\n1. Setting model version {latest_version} to None (Development) stage...")
         model_manager.transition_stage(
             model_name="sample_classifier",
             version=latest_version,
-            stage=STAGE_DEV,
+            stage=STAGE_DEV,  # This is "None"
             archive_existing=False,
         )
         
@@ -194,12 +194,12 @@ def main():
         print(f"\nRun ID: {run_id}")
         print(f"Model: sample_classifier")
         print(f"Version: {version}")
-        print(f"Stage: Development")
+        print(f"Stage: None (Development)")
         print(f"\nAccuracy: {metrics['accuracy']:.4f}")
         print("\nNext steps:")
         print("  1. View in MLflow UI: http://localhost:5000")
-        print("  2. Promote to Staging: mlflow-registry promote sample_classifier <version> --stage Staging")
-        print("  3. Use CLI: mlflow-registry list")
+        print("  2. Promote to Staging: mlflow-registry promote staging sample_classifier 1")
+        print("  3. Use CLI: mlflow-registry list models")
         
         return 0
         

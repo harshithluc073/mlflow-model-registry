@@ -22,12 +22,12 @@ logger = setup_logger(__name__)
 class StageManager:
     """Manages model stage transitions and lifecycle."""
     
-    # Define allowed transitions
+    # Define allowed transitions (None = Development/Unassigned)
     ALLOWED_TRANSITIONS = {
-        STAGE_DEV: [STAGE_STAGING, STAGE_ARCHIVED],
+        STAGE_DEV: [STAGE_STAGING, STAGE_ARCHIVED],  # None -> Staging or Archived
         STAGE_STAGING: [STAGE_PRODUCTION, STAGE_DEV, STAGE_ARCHIVED],
-        STAGE_PRODUCTION: [STAGE_ARCHIVED],
-        STAGE_ARCHIVED: [STAGE_DEV],  # Allow re-activation
+        STAGE_PRODUCTION: [STAGE_ARCHIVED, STAGE_STAGING],  # Allow rollback to Staging
+        STAGE_ARCHIVED: [STAGE_DEV, STAGE_STAGING],  # Allow re-activation
     }
     
     def __init__(self):

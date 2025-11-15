@@ -33,7 +33,17 @@ def start_mlflow_server(host="127.0.0.1", port=5000):
     
     # Ensure directories exist
     Path(backend_store).mkdir(parents=True, exist_ok=True)
-    Path(artifact_root).mkdir(parents=True, exist_ok=True)
+    
+    # Extract path from file:// URI if present
+    if artifact_root.startswith('file://'):
+        artifact_path = artifact_root[7:]  # Remove file://
+        if artifact_path.startswith('/') and ':' in artifact_path:
+            # Windows path like /C:/Users/...
+            artifact_path = artifact_path[1:]  # Remove leading /
+    else:
+        artifact_path = artifact_root
+    
+    Path(artifact_path).mkdir(parents=True, exist_ok=True)
     
     print("="*60)
     print("Starting MLflow Tracking Server")
@@ -44,12 +54,12 @@ def start_mlflow_server(host="127.0.0.1", port=5000):
     print("="*60)
     print("\nPress Ctrl+C to stop the server\n")
     
-    # Build command
+    # Build command - use the actual path for artifact root, not URI
     cmd = [
         "mlflow",
         "server",
         "--backend-store-uri", f"file:///{backend_store}",
-        "--default-artifact-root", artifact_root,
+        "--default-artifact-root", artifact_path,  # Use path, not URI
         "--host", host,
         "--port", str(port),
     ]

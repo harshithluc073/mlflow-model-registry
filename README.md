@@ -47,7 +47,7 @@ This project implements a **centralized, file-based model registry** using MLflo
                         ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         Stage-Based Deployment                              │
-│  Development → Staging → Production                         │
+│  None (Dev) → Staging → Production                          │
 └───────────────────────┬─────────────────────────────────────┘
                         │
                         ▼

@@ -13,21 +13,24 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 # MLflow Configuration
 MLFLOW_TRACKING_URI = os.getenv(
-    "MLFLOW_TRACKING_URI", f"sqlite:///{PROJECT_ROOT}/data/mlflow.db"
+    "MLFLOW_TRACKING_URI", 
+    f"sqlite:///{PROJECT_ROOT}/data/mlflow.db"
 )
 MLFLOW_ARTIFACT_ROOT = os.getenv(
-    "MLFLOW_ARTIFACT_ROOT", str(PROJECT_ROOT / "data" / "mlartifacts")
+    "MLFLOW_ARTIFACT_ROOT",
+    str(PROJECT_ROOT / "data" / "mlartifacts")
 )
 MLFLOW_BACKEND_STORE = os.getenv(
-    "MLFLOW_BACKEND_STORE", str(PROJECT_ROOT / "data" / "mlruns")
+    "MLFLOW_BACKEND_STORE",
+    str(PROJECT_ROOT / "data" / "mlruns")
 )
 
 # Model Registry Configuration
 REGISTRY_NAME = os.getenv("REGISTRY_NAME", "mlflow-model-registry")
 DEFAULT_EXPERIMENT_NAME = os.getenv("DEFAULT_EXPERIMENT_NAME", "default")
 
-# Stage Names
-STAGE_DEV = "Development"
+# Stage Names (MLflow valid stages: None, Staging, Production, Archived)
+STAGE_DEV = "None"  # MLflow uses "None" for development/unassigned
 STAGE_STAGING = "Staging"
 STAGE_PRODUCTION = "Production"
 STAGE_ARCHIVED = "Archived"
@@ -55,23 +58,22 @@ DB_NAME = os.getenv("DB_NAME", "mlflow")
 DB_USER = os.getenv("DB_USER", "mlflow")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
-
 def get_tracking_uri() -> str:
     """Get MLflow tracking URI based on database type."""
     if DB_TYPE == "postgresql":
         return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     return MLFLOW_TRACKING_URI
 
-
 def get_artifact_root() -> str:
     """Get artifact storage root path."""
     artifact_path = Path(MLFLOW_ARTIFACT_ROOT)
     artifact_path.mkdir(parents=True, exist_ok=True)
-    return str(artifact_path)
-
+    # Convert to absolute path, then to proper file:// URI format
+    return artifact_path.resolve().as_uri()
 
 def get_backend_store() -> str:
     """Get backend store path."""
     backend_path = Path(MLFLOW_BACKEND_STORE)
     backend_path.mkdir(parents=True, exist_ok=True)
-    return str(backend_path)
+    # Return absolute path as string
+    return str(backend_path.resolve())

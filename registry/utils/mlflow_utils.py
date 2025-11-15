@@ -46,6 +46,8 @@ def create_experiment(
     Returns:
         Experiment ID
     """
+    from pathlib import Path
+    
     client = get_mlflow_client()
     
     # Check if experiment already exists
@@ -54,9 +56,19 @@ def create_experiment(
         logger.info(f"Experiment '{name}' already exists with ID: {experiment.experiment_id}")
         return experiment.experiment_id
     
-    # Set artifact location
+    # Set artifact location with proper file:// URI
     if artifact_location is None:
-        artifact_location = f"{get_artifact_root()}/{name}"
+        artifact_root = get_artifact_root()
+        # Remove file:// prefix if present, then reconstruct
+        if artifact_root.startswith('file://'):
+            artifact_root = artifact_root[7:]
+            # Handle Windows paths like /C:/Users/...
+            if artifact_root.startswith('/') and ':' in artifact_root:
+                artifact_root = artifact_root[1:]
+        
+        artifact_path = Path(artifact_root) / name
+        # Resolve to absolute path and convert to URI
+        artifact_location = artifact_path.resolve().as_uri()
     
     # Create experiment
     experiment_id = client.create_experiment(

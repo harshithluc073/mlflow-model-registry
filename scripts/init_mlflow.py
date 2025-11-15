@@ -43,6 +43,8 @@ def create_directories():
 
 def initialize_mlflow():
     """Initialize MLflow tracking server."""
+    from pathlib import Path
+    
     tracking_uri = get_tracking_uri()
     artifact_root = get_artifact_root()
     
@@ -57,15 +59,29 @@ def initialize_mlflow():
     try:
         experiment = client.get_experiment_by_name(DEFAULT_EXPERIMENT_NAME)
         if experiment is None:
+            # Create proper file URI for artifact location
+            if artifact_root.startswith('file://'):
+                artifact_root_path = artifact_root[7:]
+                # Handle Windows paths like /C:/Users/...
+                if artifact_root_path.startswith('/') and ':' in artifact_root_path:
+                    artifact_root_path = artifact_root_path[1:]
+            else:
+                artifact_root_path = artifact_root
+            
+            # Create absolute path and convert to URI
+            artifact_location = (Path(artifact_root_path) / DEFAULT_EXPERIMENT_NAME).resolve().as_uri()
+            
             experiment_id = client.create_experiment(
                 name=DEFAULT_EXPERIMENT_NAME,
-                artifact_location=f"{artifact_root}/{DEFAULT_EXPERIMENT_NAME}"
+                artifact_location=artifact_location
             )
             print(f"✓ Created default experiment: {DEFAULT_EXPERIMENT_NAME} (ID: {experiment_id})")
         else:
             print(f"✓ Default experiment already exists: {DEFAULT_EXPERIMENT_NAME}")
     except Exception as e:
         print(f"✗ Error creating experiment: {e}")
+        import traceback
+        traceback.print_exc()
         return False
     
     return True
