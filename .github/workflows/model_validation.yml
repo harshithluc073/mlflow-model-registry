@@ -1,0 +1,41 @@
+name: Model Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'workflows/**'
+      - 'registry/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Initialize MLflow
+      run: |
+        python scripts/init_mlflow.py
+    
+    - name: Train and validate model
+      run: |
+        python workflows/training/sample_model.py
+    
+    - name: Check model metrics
+      run: |
+        python scripts/validate_model_metrics.py
+    
+    - name: Validate model tags
+      run: |
+        python scripts/validate_model_tags.py
