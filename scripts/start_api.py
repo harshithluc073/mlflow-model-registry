@@ -5,16 +5,20 @@ Launch the model inference API server.
 """
 
 import sys
+import os
 from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Also set PYTHONPATH environment variable
+os.environ['PYTHONPATH'] = str(project_root)
+
 
 def main():
     """Start the FastAPI server."""
-    from api.main import main as run_api
+    import uvicorn
     
     print("="*60)
     print("Starting FastAPI Inference Service")
@@ -28,7 +32,14 @@ def main():
     print("="*60)
     print()
     
-    run_api()
+    from config.settings import API_HOST, API_PORT, API_RELOAD
+    
+    uvicorn.run(
+        "api.main:app",
+        host=API_HOST,
+        port=API_PORT,
+        reload=API_RELOAD,
+    )
 
 
 if __name__ == "__main__":
