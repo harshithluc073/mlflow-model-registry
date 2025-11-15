@@ -2,25 +2,30 @@
 Setup configuration for MLflow Model Registry package
 """
 
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 # Read README for long description
 readme_file = Path(__file__).parent / "README.md"
-long_description = readme_file.read_text(encoding="utf-8") if readme_file.exists() else ""
+long_description = (
+    readme_file.read_text(encoding="utf-8") if readme_file.exists() else ""
+)
 
 # Read requirements
 requirements_file = Path(__file__).parent / "requirements.txt"
 requirements = []
 if requirements_file.exists():
     with open(requirements_file, "r", encoding="utf-8") as f:
-        requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+        requirements = [
+            line.strip() for line in f if line.strip() and not line.startswith("#")
+        ]
 
 setup(
     name="mlflow-model-registry",
     version="0.1.0",
     author="Harshith",
-    author_email="chitikeshiharshith@gmail.com", 
+    author_email="chitikeshiharshith@gmail.com",
     description="Production-ready MLflow model registry with CI/CD and FastAPI inference",
     long_description=long_description,
     long_description_content_type="text/markdown",

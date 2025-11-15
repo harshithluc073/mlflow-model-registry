@@ -13,16 +13,13 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 # MLflow Configuration
 MLFLOW_TRACKING_URI = os.getenv(
-    "MLFLOW_TRACKING_URI", 
-    f"sqlite:///{PROJECT_ROOT}/data/mlflow.db"
+    "MLFLOW_TRACKING_URI", f"sqlite:///{PROJECT_ROOT}/data/mlflow.db"
 )
 MLFLOW_ARTIFACT_ROOT = os.getenv(
-    "MLFLOW_ARTIFACT_ROOT",
-    str(PROJECT_ROOT / "data" / "mlartifacts")
+    "MLFLOW_ARTIFACT_ROOT", str(PROJECT_ROOT / "data" / "mlartifacts")
 )
 MLFLOW_BACKEND_STORE = os.getenv(
-    "MLFLOW_BACKEND_STORE",
-    str(PROJECT_ROOT / "data" / "mlruns")
+    "MLFLOW_BACKEND_STORE", str(PROJECT_ROOT / "data" / "mlruns")
 )
 
 # Model Registry Configuration
@@ -58,17 +55,20 @@ DB_NAME = os.getenv("DB_NAME", "mlflow")
 DB_USER = os.getenv("DB_USER", "mlflow")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
+
 def get_tracking_uri() -> str:
     """Get MLflow tracking URI based on database type."""
     if DB_TYPE == "postgresql":
         return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     return MLFLOW_TRACKING_URI
 
+
 def get_artifact_root() -> str:
     """Get artifact storage root path."""
     artifact_path = Path(MLFLOW_ARTIFACT_ROOT)
     artifact_path.mkdir(parents=True, exist_ok=True)
     return str(artifact_path)
+
 
 def get_backend_store() -> str:
     """Get backend store path."""

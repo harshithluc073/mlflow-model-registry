@@ -17,6 +17,7 @@ REQUIRED_PACKAGES = {
     "uvicorn": "0.25.0",
 }
 
+
 def check_package(package_name: str, min_version: str) -> bool:
     """Check if a package is installed and meets minimum version."""
     try:
@@ -28,16 +29,17 @@ def check_package(package_name: str, min_version: str) -> bool:
         print(f"✗ {package_name}: NOT INSTALLED (required: >={min_version})")
         return False
 
+
 def main():
     """Check all required packages."""
     print("Checking required dependencies...\n")
-    
+
     all_installed = True
     for package, min_version in REQUIRED_PACKAGES.items():
         if not check_package(package, min_version):
             all_installed = False
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     if all_installed:
         print("✓ All required packages are installed!")
         print("Your environment is ready for development.")
@@ -46,6 +48,7 @@ def main():
         print("✗ Some packages are missing.")
         print("Run: pip install -r requirements.txt")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
