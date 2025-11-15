@@ -2,6 +2,5 @@
 API Services - Business logic for API endpoints
 """
 
-from api.services.model_service import ModelService, model_service
-
-__all__ = ["ModelService", "model_service"]
+# Services are imported directly where needed to avoid circular imports
+__all__ = ["model_service"]
